@@ -133,7 +133,7 @@ app.post('/api/signup', async function (req, res) {
 
 })
 
-app.post('/api/loadmap', async function (req, res) {
+app.get('/api/loadmap', async function (req, res) {
   //find and send pins within users range
   try {
     await client.connect();
