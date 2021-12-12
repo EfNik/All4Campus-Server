@@ -6,6 +6,8 @@ const cors = require("cors");
 const { response } = require('express');
 const { MongoClient, MongoRuntimeError } = require('mongodb');
 const bcrypt=require('bcryptjs')
+const jwt = require("jsonwebtoken");
+
 
 app.use(bodyParser.urlencoded({ extended: false })); //parses url encoded bodies
 app.use(bodyParser.json()); // semd json repsonses
@@ -53,7 +55,8 @@ app.post('/api/login', async function (req, res) {
     }
     else {
       response = { status: "success", name: user.Name };
-      res.json(response);
+      let token = jwt.sign(response,process.env.JWT_KEY)
+      res.json({token});
     }
   }
     //console.log(user==null);
