@@ -162,10 +162,15 @@ app.get('/api/loadmap', async function (req, res) {
           else break;
         }
         if (counter == 3) {
-          sensorsNew.push({ "type": sensor.type, "location": sensor.location, "status": "occupied" });
+          sensorsNew.push({ "type": sensor.type, "location": sensor.location, "status": "red" });
+        }
+        else if(counter==2)
+        {
+          sensorsNew.push({ "type": sensor.type, "location": sensor.location, "status": "yellow" });
+
         }
         else {
-          sensorsNew.push({ "type": sensor.type, "location": sensor.location, "status": "free" });
+          sensorsNew.push({ "type": sensor.type, "location": sensor.location, "status": "green" });
         }
         //console.log(sensorsNew)
         return {
