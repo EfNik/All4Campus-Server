@@ -54,7 +54,7 @@ app.post('/api/login', async function (req, res) {
       res.json(response);
     }
     else {
-      response = { status: "success", name: user.Name };
+      response = { email: req.body.email };
       let token = jwt.sign(response,process.env.JWT_KEY)
       res.json({token});
     }
@@ -71,7 +71,6 @@ app.post('/api/login', async function (req, res) {
 app.post('/api/signup', async function (req, res) {
 
   let response;
-  console.log("------------",req.body)
   try {
     await client.connect();
 
@@ -93,7 +92,7 @@ app.post('/api/signup', async function (req, res) {
 
       const db = client.db('Iot');
       const users = db.collection("Users");
-      console.log("------------",req.body.password)
+   
       let hashedPassword = await bcrypt.hash(req.body.password,8)
 
       newuser = { "email": req.body.email, "password": hashedPassword, "name": { "firsname": req.body.firsname, "lastname": req.body.lastname } };
@@ -195,8 +194,39 @@ app.get('/api/loadmap', async function (req, res) {
 
 })
 
+app.post('/api/reports', async function (req, res) {
+  //Store the reports from the users in the database
+  let response;
+  
+  try {
+    await client.connect();
 
-app.post('/api/occupiedRamps', async function (req, res) {
+    const db = client.db('Iot');
+    const reports = db.collection("Reports");
+
+    var decoded = jwt.decode(req.body.token);
+    
+    
+  
+    console.log(decoded.email);
+    // console.log(req.body);
+
+    // let email = 
+
+    newReport = { "email": decoded.email, "placeNTime":req.body.placeNTime,"issue":req.body.issue,"status": "unread-unsolved" };
+
+    var insertResult = await reports.insertOne(newReport)
+    console.log(insertResult);
+    res.json({ status: "success", reason: "200" });
+
+  }
+  finally {
+    await client.close();
+  }
+
+})
+
+app.get('/api/occupiedRamps', async function (req, res) {
   //Access for authorities to see the ramps under occupation 
 
 
