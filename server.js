@@ -213,7 +213,7 @@ app.post('/api/reports', async function (req, res) {
 
     // let email = 
 
-    newReport = { "email": decoded.email, "placeNTime":req.body.placeNTime,"issue":req.body.issue,"status": "unread-unsolved" };
+    newReport = { "email": decoded.email, "place":req.body.place,"issue":req.body.issue,"status": "unread-unsolved" };
 
     var insertResult = await reports.insertOne(newReport)
     console.log(insertResult);
