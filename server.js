@@ -205,10 +205,9 @@ app.post('/api/reports', async function (req, res) {
     const reports = db.collection("Reports");
 
     var decoded = jwt.decode(req.body.token);
-    
-    
-  
-    console.log(decoded.email);
+   
+
+    // console.log(decoded.email);
     // console.log(req.body);
 
     // let email = 
@@ -218,6 +217,58 @@ app.post('/api/reports', async function (req, res) {
     var insertResult = await reports.insertOne(newReport)
     console.log(insertResult);
     res.json({ status: "success", reason: "200" });
+
+  }
+  finally {
+    await client.close();
+  }
+
+})
+
+app.post('/api/getReports', async function (req, res) {
+  //Store the reports from the users in the database
+  let response;
+  
+
+
+
+  try {
+    await client.connect();
+
+    const db = client.db('Iot');
+    const reports = db.collection("Reports");
+
+
+
+
+    var decoded = jwt.decode(req.body.token);
+    // console.log(req.body)
+    const query = { "email": decoded.email }
+
+
+    // const user = await reports.find(query);
+    // console.log(user)
+    // console.log(query)
+
+    const rep = await reports.find(query).toArray();
+    // console.log(rep)
+    res.json(rep);
+    // reports.find(query).toArray(async function (err, result) { 
+
+    //   if (err) throw err;
+    //   console.log(result)
+
+
+    //   result.forEach(function (sensor) {
+    //     console.log(sensor);
+    //    })
+    // });
+
+    
+    // console.log(query);
+    // const allReports = await reports.find(query).toArray(async function (err, result) { 
+    //   console.log(result);
+    // });
 
   }
   finally {
@@ -371,4 +422,4 @@ async function mapTest() {
 
 //loginTest();
 
-mapTest();
+// mapTest();
