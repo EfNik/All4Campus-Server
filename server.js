@@ -161,15 +161,15 @@ app.get('/api/loadmap', async function (req, res) {
           else break;
         }
         if (counter == 3) {
-          sensorsNew.push({ "type": sensor.type, "location": sensor.location, "status": "red" });
+          sensorsNew.push({ "type": sensor.type, "location": sensor.location, "status": "red","id":sensor._id });
         }
         else if(counter==2)
         {
-          sensorsNew.push({ "type": sensor.type, "location": sensor.location, "status": "yellow" });
+          sensorsNew.push({ "type": sensor.type, "location": sensor.location, "status": "yellow","id":sensor._id });
 
         }
         else {
-          sensorsNew.push({ "type": sensor.type, "location": sensor.location, "status": "green" });
+          sensorsNew.push({ "type": sensor.type, "location": sensor.location, "status": "green","id":sensor._id });
         }
         //console.log(sensorsNew)
         return {
@@ -194,6 +194,32 @@ app.get('/api/loadmap', async function (req, res) {
 
 })
 
+app.post('/api/getImage', async function (req, res) {
+
+// var id = req.body.id;
+var id = "61ae39ebf5ff19b83ac28c4d"
+console.log(req.body)
+let picURL = "/Pictures/"+id+".png";
+// console.log("./Pictures/"+id);
+try {
+  // res.set({'Content-Type': 'image/png'}); 
+  // console.log("./Pictures/"+id);
+  res.type('blob')
+  res.sendFile(picURL, { root: '.' }, function (err) {
+    if (err) {
+      console.log(err)
+    } else {
+      console.log('Sent:', "./Pictures/61ae39ebf5ff19b83ac28c4d")
+    }
+  })
+}
+catch (error) {
+  console.log(error)
+  res.json({ status: "failure", reason: "500" });
+}
+})
+
+
 app.post('/api/reports', async function (req, res) {
   //Store the reports from the users in the database
   let response;
@@ -207,7 +233,7 @@ app.post('/api/reports', async function (req, res) {
     var decoded = jwt.decode(req.body.token);
    
 
-    // console.log(decoded.email);
+     // console.log(decoded.email);
     // console.log(req.body);
 
     // let email = 
