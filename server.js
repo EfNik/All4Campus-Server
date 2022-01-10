@@ -322,7 +322,7 @@ app.post('/api/test', function (req, res) {
 
 })
 
-app.post('/A4C/sensordata', async function (req, res) {
+app.post('/api/sensordata', async function (req, res) {
   let response;
   
   try {
