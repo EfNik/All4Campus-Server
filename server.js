@@ -204,7 +204,7 @@ let picURL = "/Pictures/"+id+".png";
 try {
   // res.set({'Content-Type': 'image/png'}); 
   // console.log("./Pictures/"+id);
-  res.type('blob')
+  // res.type('blob')
   res.sendFile(picURL, { root: '.' }, function (err) {
     if (err) {
       console.log(err)
@@ -319,6 +319,38 @@ app.post('/api/test', function (req, res) {
 
   var repsonse = "Received";
   res.json(response);
+
+})
+
+app.post('/A4C/sensordata', async function (req, res) {
+  let response;
+  
+  try {
+    await client.connect();
+
+    const db = client.db('Iot');
+    const reports = db.collection("realSensors");
+
+    // var decoded = jwt.decode(req.body.token);
+   
+
+     // console.log(decoded.email);
+    // console.log(req.body);
+
+    // let email = 
+
+    // newReport = { "email": decoded.email, "place":req.body.place,"issue":req.body.issue,"status": "unread-unsolved" };
+
+    var insertResult = await reports.insertOne(req)
+    console.log(insertResult);
+    res.json({ status: "success", reason: "200" });
+
+  }
+  finally {
+    await client.close();
+  }
+
+  
 
 })
 
