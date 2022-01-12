@@ -24,6 +24,8 @@ require('dotenv').config();
 
 // Listen
 
+// app.listen(8080);
+//for real server
 app.listen(80);
 console.log("App is listening on port 80");
 
@@ -340,8 +342,13 @@ app.post('/api/sensordata', async function (req, res) {
     const searchQuery = { "email": req.body.email }
     const sensor = await users.findOne(query);
 
-
+    client.close()
     if (user == null) {
+
+      await client.connect();
+
+      const db = client.db('Iot');
+      const sensors = db.collection("realSensors");
 
       let newEntry = {"DevId": req.body.devEUI,"entries":[ {"location": {"latitude": req.body.rxInfo[0].location.latitude, "longitude":  req.body.rxInfo[0].location.longitude},"timestamp": req.body.rxInfo[0].time, "status": sensorDetails.carStatus, "battery": sensorDetails.batteryVoltage}]}
       console.log(newEntry);
@@ -350,9 +357,14 @@ app.post('/api/sensordata', async function (req, res) {
       console.log(insertResult);
 
       res.json({ status: "success", reason: "200" });
-
+      client.close()
     }
     else{
+      await client.connect();
+
+      const db = client.db('Iot');
+      const sensors = db.collection("realSensors");
+
       let newEntry = {"location": {"latitude": req.body.rxInfo[0].location.latitude, "longitude":  req.body.rxInfo[0].location.longitude},"timestamp": req.body.rxInfo[0].time, "status": sensorDetails.carStatus, "battery": sensorDetails.batteryVoltage}
       console.log(newEntry);
       
@@ -360,7 +372,7 @@ app.post('/api/sensordata', async function (req, res) {
       console.log(updateResult);
 
       res.json({ status: "success", reason: "200" });
-
+      client.close()
     }
 
 
