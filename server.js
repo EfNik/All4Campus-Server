@@ -331,17 +331,18 @@ app.post('/api/sensordata', async function (req, res) {
     const db = client.db('Iot');
     const reports = db.collection("realSensors");
 
+    // const query = {'sensor': req.body}
     // var decoded = jwt.decode(req.body.token);
    
 
      // console.log(decoded.email);
-    // console.log(req.body);
+    console.log(req.body);
 
     // let email = 
 
     // newReport = { "email": decoded.email, "place":req.body.place,"issue":req.body.issue,"status": "unread-unsolved" };
 
-    var insertResult = await reports.insertOne(req)
+    var insertResult = await reports.insertOne(req.body)
     console.log(insertResult);
     res.json({ status: "success", reason: "200" });
 
