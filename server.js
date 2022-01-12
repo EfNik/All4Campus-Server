@@ -210,6 +210,7 @@ try {
       console.log(err)
     } else {
       console.log('Sent:', "./Pictures/61ae39ebf5ff19b83ac28c4d")
+      console.log("test works")
     }
   })
 }
@@ -309,19 +310,6 @@ app.get('/api/occupiedRamps', async function (req, res) {
 
 })
 
-
-//---------------EXAMPLES------------------------------------
-
-// Routes
-app.post('/api/test', function (req, res) {
-
-  console.log(req.body);
-
-  var repsonse = "Received";
-  res.json(response);
-
-})
-
 app.post('/api/sensordata', async function (req, res) {
   let response;
   
@@ -354,6 +342,20 @@ app.post('/api/sensordata', async function (req, res) {
   
 
 })
+
+//---------------EXAMPLES------------------------------------
+
+// Routes
+app.post('/api/test', function (req, res) {
+
+  console.log(req.body);
+
+  var repsonse = "Received";
+  res.json(response);
+
+})
+
+
 
 
 //show db names
