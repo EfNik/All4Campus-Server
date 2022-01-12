@@ -18,8 +18,8 @@ require('dotenv').config();
 
 // Listen
 
-app.listen(8080);
-console.log("App is listening on port 8080");
+app.listen(80);
+console.log("App is listening on port 80");
 
 //db
 
