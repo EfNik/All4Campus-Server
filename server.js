@@ -313,24 +313,28 @@ app.get('/api/occupiedRamps', async function (req, res) {
 app.post('/api/sensordata', async function (req, res) {
   let response;
   
+  // let realData = {"_id":{"$oid":"61dec4afa2a728723b1f8a59"},"applicationID":"22","applicationName":"Team11","deviceName":"Cicicom","devEUI":"AASjCwDppIM=","rxInfo":[{"gatewayID":"AIAAAKAAZO8=","time":"2022-01-12T12:08:14.033496Z","timeSinceGPSEpoch":"1326024512.033s","rssi":-118,"loRaSNR":-8,"channel":4,"rfChain":0,"board":0,"antenna":0,"location":{"latitude":38.28459,"longitude":21.78832,"altitude":95,"source":"UNKNOWN","accuracy":0},"fineTimestampType":"PLAIN","plainFineTimestamp":{"time":"2022-01-12T12:08:14.518815149Z"},"context":"av1YBA==","uplinkID":"o0kT1qyGTJGQRAhIf+WCog==","crcStatus":"CRC_OK"}],"txInfo":{"frequency":869900000,"modulation":"LORA","loRaModulationInfo":{"bandwidth":125,"spreadingFactor":12,"codeRate":"4/5","polarizationInversion":false}},"adr":true,"dr":0,"fCnt":0,"fPort":1,"data":"ODMuMzAwAAAAACsyNy4wVjIuOC4z","objectJSON":"{\"batteryVoltage\":\"3.30\",\"carStatus\":0,\"temperature\":\"+27.0\"}","tags":{},"confirmedUplink":true,"devAddr":"AfIijg=="}
+
+
+  // console.log(realData.devEUI,realData.rxInfo[0].location.latitude,realData.rxInfo[0].time,JSON.parse(realData.objectJSON));
+
+
+
   try {
     await client.connect();
 
     const db = client.db('Iot');
     const reports = db.collection("realSensors");
 
-    // const query = {'sensor': req.body}
-    // var decoded = jwt.decode(req.body.token);
-   
-
-     // console.log(decoded.email);
     console.log(req.body);
 
-    // let email = 
+    let sensorDetails = JSON.parse(req.body.objectJSON)
 
-    // newReport = { "email": decoded.email, "place":req.body.place,"issue":req.body.issue,"status": "unread-unsolved" };
+    let newEntry = {"DevId": req.body.devEUI, "location": {"latitude": req.body.rxInfo[0].location.latitude, "longitude":  req.body.rxInfo[0].location.longitude},"timestamp": req.body.rxInfo[0].time, "status": sensorDetails.carStatus, "battery": sensorDetails.batteryVoltage}
+    
+    console.log(newEntry);
 
-    var insertResult = await reports.insertOne(req.body)
+    var insertResult = await reports.insertOne(newEntry)
     console.log(insertResult);
     res.json({ status: "success", reason: "200" });
 
