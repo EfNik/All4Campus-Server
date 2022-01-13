@@ -336,8 +336,8 @@ app.post('/api/sensordata', async function (req, res) {
 
     console.log(req.body);
     // console.log(JSON.parse(req.body.rxInfo[0]).location.latitude);
-    // let sensorDetails = JSON.parse(req.body.objectJSON)
-    let sensorDetails = req.body.objectJSON
+    let sensorDetails = JSON.parse(req.body.objectJSON)
+    // let sensorDetails = req.body.objectJSON
     let devID =  req.body.devEUI;
 
 
