@@ -335,25 +335,34 @@ app.post('/api/sensordata', async function (req, res) {
     const sensors = db.collection("realSensors");
 
     console.log(req.body);
-
-    let sensorDetails = JSON.parse(req.body.objectJSON)
+    // console.log(JSON.parse(req.body.rxInfo[0]).location.latitude);
+    // let sensorDetails = JSON.parse(req.body.objectJSON)
+    let sensorDetails = req.body.objectJSON
     let devID =  req.body.devEUI;
 
-    const searchQuery = { "email": req.body.email }
-    const sensor = await users.findOne(query);
 
-    client.close()
-    if (user == null) {
+    const searchQuery = { "DevId": devID }
+    const sensor = await sensors.findOne(searchQuery);
+    // console.log("------------------")
+    // console.log(sensor);
+    client.close();
+
+    
+    if (sensor == null) {
 
       await client.connect();
 
       const db = client.db('Iot');
       const sensors = db.collection("realSensors");
 
-      let newEntry = {"DevId": req.body.devEUI,"entries":[ {"location": {"latitude": req.body.rxInfo[0].location.latitude, "longitude":  req.body.rxInfo[0].location.longitude},"timestamp": req.body.rxInfo[0].time, "status": sensorDetails.carStatus, "battery": sensorDetails.batteryVoltage}]}
+      let newEntry = {"DevId": req.body.devEUI,"entries":[ {"location": {"latitude": req.body.rxInfo[0].location.latitude, "longitude": req.body.rxInfo[0].location.longitude},"timestamp": req.body.rxInfo[0].time, "status": sensorDetails.carStatus, "battery": sensorDetails.batteryVoltage}]}
+      // let newEntry = {"DevId": req.body.devEUI,"entries":[ {"location": {"latitude": JSON.parse(req.body.rxInfo[0]).location.latitude, "longitude":  JSON.parse(req.body.rxInfo[0]).location.longitude},"timestamp": req.body.rxInfo[0].time, "status": sensorDetails.carStatus, "battery": sensorDetails.batteryVoltage}]}
+      
+      console.log("Inserting the below json in db")
       console.log(newEntry);
 
       var insertResult = await sensors.insertOne(newEntry)
+      console.log("insert result below");
       console.log(insertResult);
 
       res.json({ status: "success", reason: "200" });
@@ -366,19 +375,16 @@ app.post('/api/sensordata', async function (req, res) {
       const sensors = db.collection("realSensors");
 
       let newEntry = {"location": {"latitude": req.body.rxInfo[0].location.latitude, "longitude":  req.body.rxInfo[0].location.longitude},"timestamp": req.body.rxInfo[0].time, "status": sensorDetails.carStatus, "battery": sensorDetails.batteryVoltage}
+      console.log("Updating with the below json in db")
       console.log(newEntry);
       
       var updateResult = await sensors.updateOne({ "DevId": devID },{ $push: { entries: newEntry } })
+      console.log("update result below");
       console.log(updateResult);
 
       res.json({ status: "success", reason: "200" });
       client.close()
     }
-
-
-
-
-
   }
   finally {
     await client.close();
