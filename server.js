@@ -26,7 +26,7 @@ require('dotenv').config();
 
 // app.listen(8080);
 //for real server
-app.listen(80);
+app.listen(8080);
 console.log("App is listening on port 80");
 
 //db
@@ -187,24 +187,53 @@ app.get('/api/loadmap', async function (req, res) {
 
       await client.connect();
 
-      // const db = client.db('Iot');
-      // const sensorsCollection = db.collection("realSensors");
-      // sensorsCollection.find({}).toArray(async function (err, result, sensorsNew) { 
+      const db = client.db('Iot');
+      const sensorsCollection = db.collection("realSensors");
+      sensorsCollection.find({}).toArray(async function (err, result) { 
+      
+        var currentdate = new Date();
+        // var datetime = "Last Sync: " + currentdate.getDate() + "/"
+        //   + (currentdate.getMonth() + 1) + "/"
+        //   + currentdate.getFullYear() + " @ "
+        //   + currentdate.getHours() + ":"
+        //   + currentdate.getMinutes() + ":"
+        //   + currentdate.getSeconds();
 
-      //   result.forEach(function(sensor){
-      //     let lastEntryNum = sensor.entries.length;
+        // console.log(datetime)  
 
-      //     let sensorStatus = sensor.entries[lastEntryNum].status;
+        result.forEach(function(sensor){
+          let lastEntryNum = sensor.entries.length;
+          
+          let sensorStatus = sensor.entries[lastEntryNum-1].status;
 
-      //     if(sensorStatus==1)
-      //     {
-      //       sensorsNew.push({"type": "r", "location": , "status": "green","id":sensor._id })
-      //     }
-      //   })
+          if(sensorStatus==1)
+          {
+            sensorsNew.push({"type": "r", "location": sensor.location, "status": "green","id": sensor.DevId })
+          }
+          else
+          {
+            sensorTimestamp = sensor.entries[lastEntryNum-1].timestamp;
 
-      // })
+            // let datetimeDate = new Date(datetime);
+            let sensorTimestampDate = new Date(sensorTimestamp);
+            let timeDif = timeDifference(currentdate,sensorTimestampDate);
 
-      res.json(sensorsNew);
+            if(timeDif>120)
+            {
+              sensorsNew.push({"type": "r", "location": sensor.location, "status": "red","id": sensor.DevId })
+            }
+            else{
+              sensorsNew.push({"type": "r", "location": sensor.location, "status": "yellow","id": sensor.DevId })
+            }
+            
+          }
+        })
+
+        res.json(sensorsNew);
+
+      })
+
+      // res.json(sensorsNew);
       // console.log(sensorsNew)
 
 
@@ -548,6 +577,30 @@ async function mapTest() {
 
 }
 
+
+function timeDifference(date1,date2) {
+  // console.log(date1,date2)
+  var difference = date1.getTime() - date2.getTime();
+
+  var daysDifference = Math.floor(difference/1000/60/60/24);
+  difference -= daysDifference*1000*60*60*24
+
+  var hoursDifference = Math.floor(difference/1000/60/60);
+  difference -= hoursDifference*1000*60*60
+
+  var minutesDifference = Math.floor(difference/1000/60);
+  difference -= minutesDifference*1000*60
+
+  var secondsDifference = Math.floor(difference/1000);
+
+  // console.log('difference = ' + 
+  //   daysDifference + ' day/s ' + 
+  //   hoursDifference + ' hour/s ' + 
+  //   minutesDifference + ' minute/s ' + 
+  //   secondsDifference + ' second/s ');
+  // console.log(Math.abs(daysDifference*24*60*60)+Math.abs(hoursDifference*60*60)+Math.abs(minutesDifference*60)+Math.abs(secondsDifference))
+  return (Math.abs(daysDifference*24*60*60)+Math.abs(hoursDifference*60*60)+Math.abs(minutesDifference*60)+Math.abs(secondsDifference))
+}
 
 // run().catch(console.dir);
 
