@@ -26,7 +26,7 @@ require('dotenv').config();
 
 // app.listen(8080);
 //for real server
-app.listen(8080);
+app.listen(80);
 console.log("App is listening on port 80");
 
 //db
