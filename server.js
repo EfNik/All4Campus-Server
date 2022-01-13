@@ -185,6 +185,25 @@ app.get('/api/loadmap', async function (req, res) {
         }
       })
 
+      await client.connect();
+
+      // const db = client.db('Iot');
+      // const sensorsCollection = db.collection("realSensors");
+      // sensorsCollection.find({}).toArray(async function (err, result, sensorsNew) { 
+
+      //   result.forEach(function(sensor){
+      //     let lastEntryNum = sensor.entries.length;
+
+      //     let sensorStatus = sensor.entries[lastEntryNum].status;
+
+      //     if(sensorStatus==1)
+      //     {
+      //       sensorsNew.push({"type": "r", "location": , "status": "green","id":sensor._id })
+      //     }
+      //   })
+
+      // })
+
       res.json(sensorsNew);
       // console.log(sensorsNew)
 
@@ -355,7 +374,7 @@ app.post('/api/sensordata', async function (req, res) {
       const db = client.db('Iot');
       const sensors = db.collection("realSensors");
 
-      let newEntry = {"DevId": req.body.devEUI,"entries":[ {"location": {"latitude": req.body.rxInfo[0].location.latitude, "longitude": req.body.rxInfo[0].location.longitude},"timestamp": req.body.rxInfo[0].time, "status": sensorDetails.carStatus, "battery": sensorDetails.batteryVoltage}]}
+      let newEntry = {"DevId": req.body.devEUI,"location": {"latitude": req.body.rxInfo[0].location.latitude, "longitude": req.body.rxInfo[0].location.longitude},"entries":[ {"timestamp": req.body.rxInfo[0].time, "status": sensorDetails.carStatus, "battery": sensorDetails.batteryVoltage}]}
       // let newEntry = {"DevId": req.body.devEUI,"entries":[ {"location": {"latitude": JSON.parse(req.body.rxInfo[0]).location.latitude, "longitude":  JSON.parse(req.body.rxInfo[0]).location.longitude},"timestamp": req.body.rxInfo[0].time, "status": sensorDetails.carStatus, "battery": sensorDetails.batteryVoltage}]}
       
       console.log("Inserting the below json in db")
@@ -374,7 +393,7 @@ app.post('/api/sensordata', async function (req, res) {
       const db = client.db('Iot');
       const sensors = db.collection("realSensors");
 
-      let newEntry = {"location": {"latitude": req.body.rxInfo[0].location.latitude, "longitude":  req.body.rxInfo[0].location.longitude},"timestamp": req.body.rxInfo[0].time, "status": sensorDetails.carStatus, "battery": sensorDetails.batteryVoltage}
+      let newEntry = {"timestamp": req.body.rxInfo[0].time, "status": sensorDetails.carStatus, "battery": sensorDetails.batteryVoltage}
       console.log("Updating with the below json in db")
       console.log(newEntry);
       
