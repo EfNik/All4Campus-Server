@@ -24,9 +24,9 @@ require('dotenv').config();
 
 // Listen
 
-// app.listen(8080);
-//for real server
 app.listen(80);
+//for real server
+// app.listen(80);
 console.log("App is listening on port 80");
 
 //db
@@ -206,7 +206,7 @@ app.get('/api/loadmap', async function (req, res) {
           
           let sensorStatus = sensor.entries[lastEntryNum-1].status;
 
-          if(sensorStatus==1)
+          if(sensorStatus==0)
           {
             sensorsNew.push({"type": "r", "location": sensor.location, "status": "green","id": sensor.DevId })
           }
@@ -442,6 +442,47 @@ app.post('/api/sensordata', async function (req, res) {
 
 })
 
+
+app.get('/api/image_issue', function (req, res) {
+	let _bugImg = req.query.bug_id;
+  console.log(req.query)
+	if (_bugImg != undefined) {
+		// file_exitst("./"+ "/Pictures/" +_bugImg + ".png", function (err, resp) {	
+      let picURL = 	"./"+ "/Pictures/" +_bugImg + ".png";	
+			// if (err)
+			// 	console.log(err);
+
+			if (res) {
+				// if (req.query.resolution == "full") {
+				// 	res.type('png').sendFile(config.config.img_path + "original/" + _bugImg + "_0.png");
+				// } else if (req.query.resolution == "medium") {
+				// 	res.type('png').sendFile(config.config.img_path + "medium/" + _bugImg + "_0_450x450.png");
+				// } else if (req.query.resolution == "small") {
+				// 	res.type('png').sendFile(config.config.img_path + "small/" + _bugImg + "_0_144x144.png");
+				// } else {
+				// 	console.log("not found");
+				// 	res.status(404).send('Not found');
+				// }
+        console.log("etetete")
+        res.type('png').sendFile(picURL, { root: '.' }, function (err){
+          if (err) {
+            console.log(err)
+          } else {
+            // console.log('Sent:', "./Pictures/61ae39ebf5ff19b83ac28c4d")
+            console.log("test works")
+          }
+        });
+			}
+			else {
+				console.log("not found!");
+				res.status(404).send('Not found');
+			}
+	
+	} else {
+		console.log("not found!!");
+		res.status(404).send('Not found');
+	}
+});
 //---------------EXAMPLES------------------------------------
 
 // Routes
