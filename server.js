@@ -165,7 +165,7 @@ app.get('/api/loadmap', async function (req, res) {
           
           let sensorStatus = sensor.entries[lastEntryNum-1].status;
 
-          if(sensorStatus==0)
+          if(sensorStatus==1)
           {
             sensorsNew.push({"type": "r", "location": sensor.location, "status": "green","id": sensor.DevId })
           }
