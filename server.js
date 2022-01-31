@@ -23,10 +23,14 @@ app.use(function(req, res, next) {
 require('dotenv').config();
 
 // Listen
+
+//Uncomment this for local run of the server
 // app.listen(8080);
 
-//for real server
+//Comment this for local run of the server
 app.listen(80);
+
+
 console.log("App is listening on port 80");
 
 //db
